@@ -27,4 +27,3 @@ This project is currently in early development phase. We're building an intellig
 pip install pydguard
 
 
-این برای فایل ریدمی آماده کردم خوبه؟
