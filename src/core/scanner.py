@@ -69,11 +69,9 @@ class DependencyScanner:
                 'warnings': []
             }
 
-            # Check for known deprecated packages
             if dep_name in deprecated_packages:
                 min_supported_version = deprecated_packages[dep_name]
                 
-                # Simple version comparison
                 try:
                     current_parts = list(map(int, current_version.split('.')))
                     min_parts = list(map(int, min_supported_version.split('.')))
@@ -83,20 +81,70 @@ class DependencyScanner:
                         dep_info['deprecation_reason'] = f'Version {current_version} is deprecated. Minimum supported version: {min_supported_version}'
                         
                 except ValueError:
-                    # If version cannot be parsed
                     dep_info['has_warnings'] = True
                     dep_info['warnings'].append(f'Version {current_version} cannot be parsed')
 
-            # Check for alpha/beta/pre-release versions
             if any(keyword in current_version.lower() for keyword in ['alpha', 'beta', 'rc', 'dev', 'pre']):
                 dep_info['has_warnings'] = True
                 dep_info['warnings'].append('This is a development/pre-release version')
 
-            # Check for packages with "deprecated" in name
             if 'deprecated' in dep_name or 'legacy' in dep_name:
                 dep_info['is_deprecated'] = True
                 dep_info['deprecation_reason'] = 'Package name indicates deprecated status'
 
             results.append(dep_info)
         
-        return results
+        return results 
+
+
+if __name__ == "__main__":
+    scanner = DependencyScanner()
+    
+    print("Starting dependency scan...")
+    print("=" * 50)
+    
+    try:
+        print("Getting pip freeze output...")
+        freeze_output = scanner.get_pip_freeze() 
+        print("Parsing dependencies...")
+        dependencies = scanner.parse_pip_freeze(freeze_output)
+        print(f"Found {len(dependencies)} dependencies")
+        print()
+        
+        print("Checking deprecation status...")
+        results = scanner.check_deprecation_status(dependencies)
+        
+        print("=" * 50)
+        print("SCAN RESULTS:")
+        print("=" * 50)
+        
+        deprecated_count = 0
+        warning_count = 0
+        
+        for result in results:
+            if result['is_deprecated']:
+                print(f"DEPRECATED: {result['name']}=={result['current_version']}")
+                print(f"   Reason: {result['deprecation_reason']}")
+                deprecated_count += 1
+            elif result['has_warnings']:
+                print(f"WARNING: {result['name']}=={result['current_version']}")
+                for warning in result['warnings']:
+                    print(f"   {warning}")
+                warning_count += 1
+            else:
+                print(f"OK: {result['name']}=={result['current_version']}")
+        
+        print("=" * 50)
+        print("SUMMARY:")
+        print(f"Total packages: {len(results)}")
+        print(f"Deprecated: {deprecated_count}")
+        print(f"Warnings: {warning_count}")
+        print(f"Healthy: {len(results) - deprecated_count - warning_count}")
+        
+    except RuntimeError as e:
+        print(f"Error: {e}")
+        print("Make sure you have pip installed and in your PATH")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+   
