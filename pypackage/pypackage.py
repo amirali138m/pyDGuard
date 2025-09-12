@@ -35,5 +35,32 @@ class PackageManage:
                 })
     
         return packages
+    
+
+    def install_package(self, package_spec: str) -> bool:
+        """
+        Installs a Python package with a specific version using pip.
+    
+        The package specification should be in the format 'package_name==version'
+        Example: 'requests==2.25.1'
+    
+        Args:
+            package_spec: Package name and version in 'name==version' format
+        
+        Returns:
+            bool: True if installation succeeded, False if failed
+        """
+        try:
+            result = subprocess.run(
+                ['pip', 'install', package_spec],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            print(f"Successfully installed: {package_spec}")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to install {package_spec}: {e.stderr}")
+            return False
 
 
