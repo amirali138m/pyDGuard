@@ -62,5 +62,26 @@ class PackageManage:
         except subprocess.CalledProcessError as e:
             print(f"Failed to install {package_spec}: {e.stderr}")
             return False
-
+    def uninstall_package(self, package_name: str) -> bool:
+        """
+        Uninstalls a Python package using pip uninstall.
+    
+        Args:
+            package_name: Name of the package to uninstall
+    
+        Returns:
+            bool: True if uninstallation succeeded, False if failed
+        """
+        try:
+            result = subprocess.run(
+                ['pip', 'uninstall', package_name, '-y'],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            print(f"Successfully uninstalled: {package_name}")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to uninstall {package_name}: {e.stderr}")
+            return False
 
