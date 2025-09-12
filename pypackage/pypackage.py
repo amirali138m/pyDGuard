@@ -84,4 +84,25 @@ class PackageManage:
         except subprocess.CalledProcessError as e:
             print(f"Failed to uninstall {package_name}: {e.stderr}")
             return False
-
+    def update_package(self, package_name: str) -> bool:
+        """
+        Updates a package to the latest version using pip.
+    
+        Args:
+            package_name: Name of the package to update
+    
+        Returns:
+            True if updated successfully, False otherwise
+        """
+        try:
+            result = subprocess.run(
+                ['pip', 'install', '--upgrade', package_name],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            print(f"Updated: {package_name}")
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to update {package_name}: {e.stderr}")
+            return False
