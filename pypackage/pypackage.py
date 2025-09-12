@@ -62,6 +62,9 @@ class PackageManage:
         except subprocess.CalledProcessError as e:
             print(f"Failed to install {package_spec}: {e.stderr}")
             return False
+        
+
+
     def uninstall_package(self, package_name: str) -> bool:
         """
         Uninstalls a Python package using pip uninstall.
@@ -84,6 +87,9 @@ class PackageManage:
         except subprocess.CalledProcessError as e:
             print(f"Failed to uninstall {package_name}: {e.stderr}")
             return False
+        
+
+
     def update_package(self, package_name: str) -> bool:
         """
         Updates a package to the latest version using pip.
@@ -105,4 +111,32 @@ class PackageManage:
             return True
         except subprocess.CalledProcessError as e:
             print(f"Failed to update {package_name}: {e.stderr}")
+            return False
+        
+
+    def full_update_packages(self) -> bool:
+        """
+        Updates all installed packages to the latest versions.
+    
+        Returns:
+            True if all packages updated successfully, False otherwise
+        """
+        try:
+            packages = self.get_installed_packages()
+            all_success = True
+        
+            for package in packages:
+                package_name = package['name']
+                if not self.update_package(package_name):
+                    all_success = False
+        
+            if all_success:
+                print("All packages updated successfully")
+            else:
+                print("Some packages failed to update")
+            
+            return all_success
+        
+        except Exception as e:
+            print(f"Error updating packages: {e}")
             return False
