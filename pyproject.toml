@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyDGuard"  
+version = "1.0.0"            
+authors = [
+  { name = "amiralimortazavi", email = "amirali.1388mort@gmail.com" }
+]
+description = "Manage python packages in code "
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.6"   
+
+classifiers = [
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+
+[project.urls]
+Homepage = "https://github.com/amirali138m/pyDGuard" 
+Issues = "https://github.com/amirali138m/pyDGuard/issues"
